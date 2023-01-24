@@ -1,0 +1,5 @@
+secrets
+*.store
+*.DS_Store
+.vscode/
+*.byebug_history

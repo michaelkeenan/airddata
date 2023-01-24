@@ -1,0 +1,10 @@
+<head>
+  <title>Sinatra test</title>
+</head>
+<body>
+  <h1>Sinatra test</h1>
+  <% @songs.each do |song| %>
+      <h3> <%= song[:title] %></h3>
+      <p> <a href="<%=song[:url]%>"> Video </a></p>
+  <% end %>
+</body>

@@ -1,0 +1,72 @@
+<style>
+  .comments {
+    margin-top: 3.5em;
+    counter-reset: commentsCount;
+    position: relative;
+  }
+  .comments::after {
+    content: counter(commentsCount) " comments";
+    position: absolute;
+    left: 0;
+    top: -2em;
+    font-weight: bold;
+  }
+  .comment {
+    position: relative;
+    border-top: 1px solid #ddd;
+    margin-bottom: 1em;
+    counter-increment: commentsCount;
+  }
+  .comment form {
+    position: absolute;
+    right: 0.5em;
+    bottom: -1em;
+  }
+  .delete-button {
+    background-color: #a00;
+    color: #fff;
+  }
+  .restore-button {
+    background-color: #050;
+    color: #fff;
+  }
+  .deleted {
+    display: none;
+    background-color: #edd;
+  }
+  .toggle-deleted-label, .toggle-deleted {
+    float: right;
+    margin-left: 0.2em;
+  }
+  .toggle-deleted:checked ~ .comments .deleted {
+    display: block;
+  }
+</style>
+
+<h1>AIRD comments</h1>
+
+<label class="toggle-deleted-label" for="toggle-deleted"> Show deleted</label>
+<input type="checkbox" id="toggle-deleted" name="toggle-deleted" class="toggle-deleted" />
+
+<div class="comments">
+  <% @comments.each do |comment| %>
+    <div id="<%= comment[:comment_uuid] %>" class="comment <%= 'deleted' if comment[:deleted_at] %>">
+      <p><%= comment[:uuid] %></p>
+      <p><%= comment[:url] %></p>
+      <p><%= comment[:created_at] %></p>
+      <p><%= comment[:text] %></p>
+      <% if comment[:deleted_at] %>
+        <p><b>Deleted at <%= comment[:deleted_at] %></b></p>
+        <form method="POST" action="/comments/restore">
+          <input name="comment_uuid" type="hidden" value="<%= comment[:comment_uuid] %>">
+          <input type="submit" value="Restore" class="restore-button" />
+        </form>
+      <% else %>
+        <form method="POST" action="/comments/delete">
+          <input name="comment_uuid" type="hidden" value="<%= comment[:comment_uuid] %>">
+          <input type="submit" value="Delete" class="delete-button" />
+        </form>
+      <% end %>
+    </div>
+  <% end %>
+</div>

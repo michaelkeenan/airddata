@@ -1,0 +1,13 @@
+<%
+require 'json'
+%>
+
+[
+  <% @comments.each_with_index do |comment, i| %>
+    {
+      "uuid": "<%= comment[:uuid] %>",
+      "url":  "<%= comment[:url] %>",
+      "text": <%= comment[:text].to_json %>
+    }<% if i < @comments.length - 1 %>,<% end %>
+  <% end %>
+]

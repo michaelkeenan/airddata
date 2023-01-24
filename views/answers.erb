@@ -1,0 +1,162 @@
+<style>
+  .answers {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0.5em;
+  }
+  .aggregate-answers {
+    display: grid;
+    grid-template-columns: fit-content(80%) fit-content(10%) fit-content(10%);
+    gap: 0.3em 1em;
+    margin-top: 2em;
+  }
+  .th {
+    font-weight: bold;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 1em;
+    gap: 1em;
+    width: 95vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+  @media screen and (max-width: 1024px) {
+    .charts-grid {
+      grid-template-columns: repeat(2, 1fr);
+      width: inherit;
+    }
+  }
+  @media (max-width: 768px) {
+    .charts-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+</style>
+
+<h1>AIRD answers</h1>
+<div class="answers-list-grid">
+  <% @answers.keys.each do |uuid| %>
+    <div> <%= escape_html(uuid) %></div>
+    <div> <%= escape_html(@answers[uuid]) %></div>
+  <% end %>
+</div>
+<div class="aggregate-answers">
+  <div class="th">URL</div>
+  <div class="th">Agree</div>
+  <div class="th">Disagree</div>
+  <% @urls.each do |url| %>
+    <div><%= url %></div>
+    <div class="text-right"><%= @aggregate_answers["#{url}|agree"] %></div>
+    <div class="text-right"><%= @aggregate_answers["#{url}|disagree"] %></div>
+  <% end %>
+</div>
+<div class="charts-grid full-bleed">
+  <div>
+    <canvas id="chart-when-agi"></canvas>
+  </div>
+  <% @root_arguments.each do |root_argument| %>
+    <div>
+      <canvas id="chart-<%=root_argument %>"></canvas>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    let chart
+
+    // "When AGI" chart is a special case, not just agree/disagree
+    chart = document.getElementById('chart-when-agi');
+
+    new Chart(chart, {
+      type: 'bar',
+      data: {
+        labels: ['Within 50 Years', 'After 50 Years', 'Never'],
+        datasets: [{
+          label: 'when-agi',
+          data: [<%= @aggregate_answers['within-50-years|agree'] %>, <%= @aggregate_answers['after-50-years|agree'] %>, <%= @aggregate_answers['never|disagree'] %>],
+          backgroundColor: ['#8d8', '#8d8', '#d88'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          title: {
+            text: 'When AGI?',
+            display: true,
+            position: 'top',
+          },
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: chartMax([<%= @aggregate_answers['within-50-years|agree'] %>, <%= @aggregate_answers['after-50-years|agree'] %>, <%= @aggregate_answers['never|disagree'] %>]),
+            ticks: {
+              stepSize: 1
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    })
+
+    function chartMax(arr) {
+      const maxVal = Math.max(...arr)
+      return Math.round(maxVal * 1.1) + 1
+    }
+
+    <% @root_arguments.each_with_index do |root_argument, i| %>
+      chart = document.getElementById('chart-<%= root_argument %>');
+      new Chart(chart, {
+        type: 'bar',
+        data: {
+          labels: ['Agree', 'Disagree'],
+          datasets: [{
+            label: '<%= root_argument %>',
+            data: [<%= @aggregate_answers[root_argument + '|agree'] %>, <%= @aggregate_answers[root_argument + '|disagree'] %>],
+            backgroundColor: ['#8d8', '#d88'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            title: {
+              text: '<%= @root_argument_titles[i] %>',
+              display: true,
+              position: 'top',
+            },
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: chartMax([<%= @aggregate_answers[root_argument + '|agree'] %>, <%= @aggregate_answers[root_argument + '|disagree'] %>]),
+              ticks: {
+                stepSize: 1
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      })
+    <% end %>
+  })
+</script>

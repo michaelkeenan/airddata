@@ -1,0 +1,13 @@
+{
+  "when-agi": {
+    "within-50-years": <%= @aggregate_answers['within-50-years|agree']%>,
+    "after-50-years": <%= @aggregate_answers['after-50-years|agree']%>,
+    "never": <%= @aggregate_answers['never|disagree']%>
+  },
+<% @root_arguments.each_with_index do |root_argument, i| %>
+  "<%= root_argument %>": {
+    "agree": <%= aggregate_answers[root_argument + '|agree'] %>,
+    "disagree": <%= aggregate_answers[root_argument + '|disagree'] %>
+  }<% if i < @root_arguments.length - 1 %>,<% end %>
+<% end %>
+}

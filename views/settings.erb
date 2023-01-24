@@ -1,0 +1,23 @@
+<style>
+  form {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(20ch, 4fr) minmax(40ch, 1fr);
+    gap: 0.5em;
+  }
+  .form-row {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<h1>Settings</h1>
+
+<form method="POST">
+    <label for="email_comments">Email recipients for comments<br />(delimit with commas):</label>
+    <input name="email_comments" value="<%= @settings[:email_comments] %>">
+    <label for="email_book_call_messages">Email recipients for book call messages<br />(delimit with commas):</label>
+    <input name="email_book_call_messages" value="<%= @settings[:email_book_call_messages] %>">
+    <div>
+      <input type="submit" />
+    </div>
+</form>

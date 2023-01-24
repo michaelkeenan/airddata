@@ -1,0 +1,71 @@
+<head>
+  <title>AIRD data</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<style>
+  body {
+    color: #212121;
+    font-family: "Helvetica Neue", "Calibri Light", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.02em;
+    font-size: 16px;
+    background-color: #eee;
+  }
+  .content {
+    max-width: 75ch;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 1em 3em;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin-bottom: 1em;
+  }
+  .authenticated {
+    position: absolute;
+    font-size: 80%;
+    font-weight: bold;
+    top: 6px;
+    right: 6px;
+    color: #333;
+    text-decoration: none;
+  }
+  .full-bleed {
+		background-color: #fff;
+		box-shadow: 0 0 0 100vmax #fff;
+		clip-path: inset(0 -100vmax);
+  }
+  @media screen and (max-width: 768px) {
+    nav {
+      font-size: 80%;
+      justify-content: space-between;
+    }
+    .content {
+      padding: 0.2em 0.5em;
+    }
+  }
+</style>
+
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/settings">Settings</a>
+    <a href="/answers">Answers</a>
+    <a href="/comments">Comments</a>
+    <a href="/book_call_messages">Book call messages</a>
+  </nav>
+  <% if session[:authenticated] %>
+    <a href="/logout" class="authenticated">Log Out</a>
+  <% end %>
+  <div class="content">
+    <% if @error_message %>
+      <p><%= @error_message %></p>
+    <% end %>
+    <%= yield %>
+  </div>
+</body>

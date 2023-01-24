@@ -1,0 +1,17 @@
+<style>
+  .message {
+    border-top: 1px solid #ddd;
+    margin-bottom: 1em;
+  }
+</style>
+
+<h1>AIRD call bookings</h1>
+<% @book_call_messages.each do |message| %>
+  <div class="message">
+    <p><b>Name:</b> <%= message[:name] %></p>
+    <p><b>Email:</b> <%= message[:email] %></p>
+    <p><b>Interest:</b> <%= message[:interest] %></p>
+    <p><b>Time:</b> <%= message[:created_at] %></p>
+    <p><b>Message:</b><br /><%= message[:message] %></p>
+  </div>
+<% end %>
