@@ -48,6 +48,10 @@ def get_comments
   comments
 end
 
+options '/comments' do
+  allow_cors_options
+end
+
 options '/comments/json' do
   allow_cors_options
 end
