@@ -65,6 +65,10 @@ get "/book_call_messages/preview_email" do
     false)
 end
 
+options '/book_call' do
+  allow_cors_options
+end
+
 post "/book_call" do
   headers['Access-Control-Allow-Origin'] = '*'
   json = JSON.parse(request.body.read)
